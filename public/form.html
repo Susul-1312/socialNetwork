@@ -1,13 +1,23 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Upload</title>
+		<title>Upload – Link Up!</title>
+	<style>
+	body {
+		background-color: black;
+		color: white;
+		font-family: arial;
+	}
+	</style>
 	</head>
 	<body>
+		<p>If you want to upload to "/users/x/", put in "x"</p>
 		<form action="upload" method="post" enctype="multipart/form-data">
-		<input type="file" name="filetoupload" /><br />
-		<input type="text" name="username" /><br />
-		<input type="submit" />
+			<label for="filetoupload">File to Upload: </label>
+			<input type="file" name="filetoupload" /><br />
+			<label for="directory">Directory to Upload to: </label>
+			<input type="text" name="directory" /><br />
+			<input type="submit" />
 		</form>
 	</body>
 </html>

@@ -4,17 +4,24 @@ const express = require("express");
 const app = express();
 const path = require('path');
 
-app.listen(8080, () => console.log("Listening on Port 8080"));
+var server = app.listen(8080, () => console.log("Listening on Port 8080"));
+server.timeout = 60000;
 
 app.use(express.static('public'));
 
 app.use('/upload', function (req, res) {
 	var form = new formidable.IncomingForm();
 	form.parse(req, function (err, fields, files) {
-		var oldpath = files.filetoupload.path;
-		var newpath = process.cwd() + '/public/users/' + fields.username.toLowerCase() + '/' + files.filetoupload.name;
 
-		if (fs.existsSync(process.cwd() + '/public/users/' + fields.username.toLowerCase())) {
+		if (!files.filetoupload) return;
+		if (!files.filetoupload.name) return;
+
+		console.log(`Got File ${JSON.stringify(files.filetoupload)}`);
+
+		var oldpath = files.filetoupload.path;
+		var newpath = process.cwd() + '/public/users/' + fields.directory.toLowerCase() + '/' + files.filetoupload.name;
+
+		if (fs.existsSync(process.cwd() + '/public/users/' + fields.directory.toLowerCase())) {
 			fs.rename(oldpath, newpath.replace("..", "."), function (err) {
 				if (err) throw err;
 				res.write("Uploaded");

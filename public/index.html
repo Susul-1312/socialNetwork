@@ -1,9 +1,44 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Index</title>
+		<title>Link Up!</title>
+		<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: arial;
+		}
+		a {
+			color: grey;
+			font-family: monospace;
+			transition: 0.25s ease;
+			text-decoration: none;
+		}
+		a:hover {
+			color: white;
+		}
+		</style>
 	</head>
 	<body>
-		<p>Hewwo Earth-chan</p>
+		<p>To upload a file go to the <a href="/form.html" style="color: white; font-family: arial; text-decoration: underline;">form</a></p>
+		<p>Or, if you dont want to upload anything, below are the files other users uploaded (I am not responsible for the content of these files, if there is anything illegal tell me and ill remove it):</p>
+
+		<div id="links" />
+
+		<script>
+		updateLinks();
+
+		async function updateLinks() {
+			res = await fetch('/list');
+			json = await res.json();
+			json.forEach(function (element) {
+				var anchor = document.createElement("a");
+				anchor.href = element;
+				anchor.innerText = element;
+				document.getElementById("links").append(anchor);
+				document.getElementById("links").append(document.createElement("br"))
+			});
+		}
+		</script>
 	</body>
 </html>
