@@ -2,6 +2,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 const express = require("express");
 const app = express();
+const path = require('path');
 
 app.listen(8080, () => console.log("Listening on Port 8080"));
 
@@ -24,26 +25,31 @@ app.use('/upload', function (req, res) {
 			res.end();
 		}
 	});
-
-app.get('/list', function (req, res) {
-	fs.readdir(directoryName, function(e, files) {
-		if (e) {
-			console.log('Error: ', e);
-			return;
-		}
-		files.forEach(function(file) {
-			var fullPath = path.join(directoryName,file);
-			fs.stat(fullPath, function(e, f) {
-				if (e) {
-					console.log('Error: ', e);
-					return;
-				}
-				if (f.isDirectory()) {
-					walk(fullPath);
-				} else {
-					console.log('- ' + fullPath);
-				}
-			});
-		});
-	});
 });
+
+app.get('/list', async function (req, res) {
+	var files = [];
+	walkSync('public/users', files);
+	var paths = files.map(function removeFirst(path) {
+	  return path.slice(path.indexOf('/'));
+	})
+
+	res.write(JSON.stringify(paths));
+	res.end();
+});
+
+const walkSync = function(dir, filelist) {
+			 var path = path || require('path');
+			 var fs = fs || require('fs'),
+					 files = fs.readdirSync(dir);
+			 filelist = filelist || [];
+			 files.forEach(function(file) {
+					 if (fs.statSync(path.join(dir, file)).isDirectory()) {
+							 filelist = walkSync(path.join(dir, file), filelist);
+					 }
+					 else {
+							 filelist.push(path.join(dir, file));
+					 }
+			 });
+			 return filelist;
+	 };
